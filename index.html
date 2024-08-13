@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Review</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .review-section {
+            margin-top: 30px;
+        }
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .star {
+            font-size: 30px;
+            cursor: pointer;
+            color: lightgray;
+        }
+        .star.selected {
+            color: gold;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        #complaint-form {
+            display: none;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Leave a Review</h1>
+    <div class="review-section">
+        <div class="star-rating" id="star-rating">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+        <button id="submit-review">Submit</button>
+    </div>
+    <div id="complaint-form">
+        <h2>We’re sorry to hear that!</h2>
+        <div class="form-group">
+            <input type="text" id="name" placeholder="Your Name" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="number" placeholder="Your Phone Number" required>
+        </div>
+        <div class="form-group">
+            <textarea id="complaint" placeholder="Your Complaint" required></textarea>
+        </div>
+        <button id="submit-complaint">Submit Complaint</button>
+    </div>
+    <div id="thank-you" style="display:none;">
+        <h2>Thank You for Your Feedback!</h2>
+    </div>
+    <script>
+        const stars = document.querySelectorAll('.star');
+        let selectedRating = 0;
+        let redirectURL = "https://g.page/r/CUUK372OG28vEAE/review"; // Use the provided Google review link
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                selectedRating = star.getAttribute('data-value');
+                stars.forEach(s => s.classList.remove('selected'));
+                for (let i = 0; i < selectedRating; i++) {
+                    stars[i].classList.add('selected');
+                }
+            });
+        });
+
+        document.getElementById('submit-review').addEventListener('click', () => {
+            if (selectedRating >= 4) {
+                window.location.href = redirectURL;
+            } else {
+                document.getElementById('complaint-form').style.display = 'block';
+            }
+        });
+
+        document.getElementById('submit-complaint').addEventListener('click', () => {
+            const name = document.getElementById('name').value;
+            const number = document.getElementById('number').value;
+            const complaint = document.getElementById('complaint').value;
+
+            if (name && number && complaint) {
+                fetch("https://script.google.com/macros/s/AKfycbx8EwfFUBJmqZrboZTZdqgsMWrfEK13Joa4c9LzjrbXs7BGsO6xAEBW-PzImUdg9HzPFw/exec", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: new URLSearchParams({
+                        "name": name,
+                        "number": number,
+                        "complaint": complaint,
+                        "rating": selectedRating
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        document.getElementById('complaint-form').style.display = 'none';
+                        document.getElementById('thank-you').style.display = 'block';
+                    }
+                })
+                .catch(error => console.error('Error!', error.message));
+            } else {
+                alert("Please fill out all fields.");
+            }
+        });
+    </script>
+</body>
+</html>
