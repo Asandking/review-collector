@@ -70,7 +70,7 @@
     <script>
         const stars = document.querySelectorAll('.star');
         let selectedRating = 0;
-        let redirectURL = "https://g.page/r/CUUK372OG28vEAE/review"; // Use the provided Google review link
+        let redirectURL = "https://g.page/r/CUUK372OG28vEAE/review"; // Business review link
 
         stars.forEach(star => {
             star.addEventListener('click', () => {
@@ -96,7 +96,7 @@
             const complaint = document.getElementById('complaint').value;
 
             if (name && number && complaint) {
-                fetch("https://script.google.com/macros/s/1e_ZJ-_lBweGtRPdqHc84YpWK5Q5RbMOWwGdL7suCyk4/exec", {
+                fetch("https://script.google.com/macros/s/AKfycbx8EwfFUBJmqZrboZTZdqgsMWrfEK13Joa4c9LzjrbXs7BGsO6xAEBW-PzImUdg9HzPFw/exec", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
